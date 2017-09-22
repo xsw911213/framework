@@ -33,7 +33,7 @@ select {
 } */
 
 .all {
-  position: fixed;
+  position: absolute;
   overflow: scroll;
   top: 0;
   left: 0;
