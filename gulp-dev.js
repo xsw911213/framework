@@ -1,70 +1,36 @@
-var gulp = require('gulp');
-var browserSync = require('browser-sync');
-var sass = require('gulp-sass');
-var clean = require('gulp-clean');
-var reload = browserSync.reload;
-var buildPath = "dist-dev";
-var basePath = "src";
-  // 静态服务器 + 监听 文件修改
-  gulp.task('serve', ['sass', 'css', 'js', 'img', 'html', 'lib'], function () {
-    browserSync.init({
-      server: "./dist-dev"
-    });
-    gulp.watch(basePath + "/**/*.css", ['css']);
-    gulp.watch(basePath + "/**/*.scss", ['sass']);
-    gulp.watch(basePath + "/**/*.html", ['html']);
-    gulp.watch(basePath + "/**/js/**", ['js']);
-    gulp.watch(basePath + "/**/img/**", ['img']);
-    gulp.watch("src/lib/**", ['lib']);
+var gulp        = require('gulp');
+var browserSync = require('browser-sync').create();
+//var sass        = require('gulp-ruby-sass');
+var sass        = require('gulp-sass');
+var reload      = browserSync.reload;
+
+// 静态服务器 + 监听 scss/html 文件
+gulp.task('serve', ['sass'], function() {
+  browserSync.init({
+    server: "./src",
+    directory: true 
   });
-  // scss编译后的css将注入到浏览器里实现更新
-  gulp.task('sass', function () {
-    return gulp.src(basePath + "/scss/*.scss")
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest(buildPath + '/css'))
-      .pipe(reload({
-        stream: true
-      }));
-  });
-  gulp.task('css', function () {
-    return gulp.src(basePath + "/**/*.css")
-      .pipe(gulp.dest(buildPath))
-      .pipe(reload({
-        stream: true
-      }));
-  })
-  gulp.task('html', function () {
-    return gulp.src(basePath + "/**/*.html")
-      .pipe(gulp.dest(buildPath))
-      .pipe(reload({
-        stream: true
-      }));
-  });
-  gulp.task('js', function () {
-    return gulp.src(basePath + '/js/*.js')
-      .pipe(gulp.dest(buildPath + '/js'))
-      .pipe(reload({
-        stream: true
-      }));
-  });
-  gulp.task('img', function () {
-    return gulp.src(basePath + '/**/images/**')
-      .pipe(gulp.dest(buildPath))
-      .pipe(reload({
-        stream: true
-      }));
-  });
-  gulp.task('lib', function () {
-    return gulp.src('src/lib/**')
-      .pipe(gulp.dest('dist-dev/lib'))
-      .pipe(reload({
-        stream: true
-      }));
-  });
-  gulp.task("clean", function () {
-    return gulp.src(['dist-dev/', 'src/rev/'])
-      .pipe(clean());
-  })
-  gulp.task('dev', ['clean'], function () {
-    gulp.start(['serve']);
-  });
+
+  gulp.watch("./src/scss/*.scss", ['sass']);
+  gulp.watch("./src/*.html").on('change', reload);
+  gulp.watch("./src/css/*.css").on('change', reload);
+  gulp.watch("./src/js/*.js").on('change', reload);
+});
+
+// scss编译后的css将注入到浏览器里实现更新
+gulp.task('sass', function() {
+  return gulp.src("./src/scss/*.scss")
+        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(gulp.dest("./src/css"))
+        .pipe(reload({stream: true}));
+});
+
+// gulp.task('sass', function () {
+//     return sass('scss/*.scss', { style: 'expanded' }) // 指明源文件路径、并进行文件匹配（style: 'compressed' 表示输出格式）
+//         .on('error', function (err) {
+//             console.error('Error!', err.message); // 显示错误信息
+//         })
+//         .pipe(gulp.dest('css')); // 输出路径
+// })
+
+gulp.task('dev', ['serve']);
