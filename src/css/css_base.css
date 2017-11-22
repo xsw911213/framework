@@ -4,7 +4,7 @@
   font-size: calc(100vw/7.5);
   list-style: none;
   -webkit-tap-highlight-color: transparent;
- 
+  -webkit-overflow-scrolling: touch;
 }
 
 html,
