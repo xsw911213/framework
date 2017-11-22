@@ -1,6 +1,22 @@
 # gulp项目模板文件。
 
 
+## 更换git仓库地址：
+1、移除原来远程仓库地址
+```bashb
+git remote rm origin
+```
+
+
+2、设置新的仓库地址
+```bashb
+git init
+git remote add origin xxxxxxxxxxxx
+git add .
+git commit
+git push -u origin master
+```
+
 ## 项目构建使用（以下命令需要在当前项目根目录下执行）：
 1、安装项目依赖（gulp等）。
 
@@ -30,3 +46,4 @@ gulp build
 
 ## 更新记录
 2017.10.31：升级三个构建文件
+2017.11.22：更新readme文件
