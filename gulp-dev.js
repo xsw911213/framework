@@ -1,11 +1,12 @@
 var gulp        = require('gulp');
+var fileinclude = require('gulp-file-include');
 var browserSync = require('browser-sync').create();
 //var sass        = require('gulp-ruby-sass');
 var sass        = require('gulp-sass');
 var reload      = browserSync.reload;
 
 // 静态服务器 + 监听 scss/html 文件
-gulp.task('serve', ['sass'], function() {
+gulp.task('serve', ['sass','fileinclude'], function() {
   browserSync.init({
     server: "./",
     directory: true,
@@ -15,6 +16,9 @@ gulp.task('serve', ['sass'], function() {
   });
 
   gulp.watch("./src/scss/*.scss", ['sass']);
+  gulp.watch("./src/html/*.html",['fileinclude']);
+  gulp.watch("./src/html/components/*/*.html",['fileinclude']);
+
   gulp.watch("./src/*.html").on('change', reload);
   gulp.watch("./src/css/*.css").on('change', reload);
   gulp.watch("./src/js/*.js").on('change', reload);
@@ -26,6 +30,17 @@ gulp.task('sass', function() {
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
         .pipe(gulp.dest("./src/css"))
         .pipe(reload({stream: true}));
+});
+
+gulp.task('fileinclude', function() {
+  gulp.src(['./src/html/*.html'])
+    .pipe(fileinclude({
+      prefix: '@@',
+      basepath: '@file',
+      indent: true//保留文件的缩进
+    }))
+    .pipe(gulp.dest('./src'))
+    .pipe(reload({stream: true}));
 });
 
 // gulp.task('sass', function () {

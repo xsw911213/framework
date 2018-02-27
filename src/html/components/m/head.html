@@ -1,0 +1,53 @@
+<head>
+  <meta charset="utf-8">
+  <title>@@title @@css</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  @@if(scale){
+  <script>
+    //根字体设置
+    (function (uiWidth) {
+      var scale = 1 / devicePixelRatio;
+      // 设置meta 压缩界面 模拟设备的高分辨率
+      document.querySelector('meta[name="viewport"]').setAttribute('content', 'initial-scale=' + scale +
+        ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var html = document.documentElement;
+        var windowWidth = html.clientWidth;
+        html.style.fontSize = windowWidth / uiWidth * 100 + 'px';
+        // 等价于html.style.fontSize = windowWidth / 640 * 100 + 'px';
+      }, false);
+    })(750);
+  </script>
+  }   @@if(!scale){
+  <script>
+    //根字体设置
+    (function (uiWidth) {
+      document.addEventListener('DOMContentLoaded', function () {
+        var html = document.documentElement;
+        var windowWidth = html.clientWidth;
+        html.style.fontSize = windowWidth / uiWidth * 100 + 'px';
+        // 等价于html.style.fontSize = windowWidth / 640 * 100 + 'px';
+      }, false);
+    })(750);
+  </script>
+  }
+  <style>
+    /*上线时删掉*/
+    #__bs_notify__ {
+      display: none !important;
+    }
+  </style>
+  <!-- 防止android端css缓存 -->
+  <script>
+    document.write('<link rel="stylesheet" href="css/css_base.css?v=' + Math.random() + '">');
+  </script>
+  
+  <link rel="stylesheet" href=@@css>
+</head>
