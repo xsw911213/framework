@@ -13,16 +13,16 @@
     "gulp-autoprefixer": "^2.3.1",
     "gulp-changed": "^1.2.1",
     "gulp-clean": "^0.3.2",
+    "gulp-file-include": "^2.0.1",
+    "gulp-htmlmin": "^4.0.0",
     "gulp-if": "^1.2.5",
     "gulp-jshint": "^1.11.2",
-    "gulp-minify-html": "^1.0.4",
     "gulp-replace": "^0.5.4",
     "gulp-rev": "^5.1.0",
     "gulp-rev-collector": "^1.0.0",
     "gulp-sass": "^3.0.0",
     "gulp-uglify": "^1.2.0",
     "jshint": "^2.8.0",
-    "run-sequence": "^1.0.2",
-    "gulp-file-include": "^2.0.1"
+    "run-sequence": "^1.0.2"
   }
 }
