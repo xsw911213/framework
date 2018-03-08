@@ -30,7 +30,7 @@ gulp.task('serve', ['sass','fileinclude'], function() {
 gulp.task('sass', function() {
   return gulp.src("./src/scss/*.scss")
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(gulp.dest("./src/style"))
+        .pipe(gulp.dest("./src/css"))
         .pipe(reload({stream: true}));
 });
 
