@@ -48,6 +48,7 @@
   <script>
     document.write('<link rel="stylesheet" href="css/css_base.css?v=' + Math.random() + '">');
   </script>
-  
-  <link rel="stylesheet" href=@@css>
+  @@for (var i = 0; i < css.length; i++) {
+  <link rel="stylesheet" href=`+css[i]+`>
+  }
 </head>
