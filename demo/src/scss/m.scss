@@ -1,0 +1,16 @@
+// 引入  组件
+@import './componets/css_base.scss';
+
+// 样式根据业务需求进行修改
+.container{
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  p{
+    position: absolute;
+    font-size: .45rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -60%);
+  }
+}
