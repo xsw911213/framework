@@ -13,13 +13,14 @@ gulp.task('serve', ['sass','fileinclude'], function() {
     directory: true,
     open: "external",
     ghostMode: false,
+    port: 1213
     // tunnel: true
   });
 
   gulp.watch("./src/scss/*.scss", ['sass']);
   gulp.watch("./src/_html/**.html",['fileinclude']);
   gulp.watch("./src/_html/components/**.html",['fileinclude']);
-  gulp.watch("./src/_html/components/*/**.html",['fileinclude']);
+  gulp.watch("./src/_html/components/**/**.html",['fileinclude']);
 
   gulp.watch("./src/*.html").on('change', reload);
   gulp.watch("./src/css/*.css").on('change', reload);
@@ -50,7 +51,7 @@ gulp.task('fileinclude', function() {
   gulp.src(['./src/_html/*.html'])
     .pipe(fileinclude({
       prefix: '@@',
-      basepath: '@file',
+      basepath: '@file',   
       indent: true//保留文件的缩进
     }))
     .pipe(htmlmin(options))

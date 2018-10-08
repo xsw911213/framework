@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+@@include('./components/m/head.html',{ "title": "会员节", "scale": false, "css": ["css/m.css","css/online/shareing.css"] })
+<body>
+  @@include('./components/m/loading.html')
+  <div id="app" class="container">
+    <section class="m0" @click.self="sectionPreventDefault">
+      <div class="share-outer">
+        <a class="share-btn" data-role="share">分享</a>
+        <span class="share-text">+10积分</span>
+      </div>
+      <a class="rule-btn" @click="showRule('main')">{{staticData.m0.ruleBtnText}}</a>
+      <div v-if="login.status" class="presonal-info">
+        <div class="avatar">
+          <div class="avatar-img">
+            <img :src="personalData.avatar" alt="">
+          </div>
+          <img v-if="personalData.certLiveal" class="c-lveal" :src="'//x.autoimg.cn/i.m/jvn/images/activity/icongrade/icongrade' + personalData.certLiveal + '.png'" alt="">
+        </div>
+        <img class="lveal-img" :src="personalData.lvealImg" alt="">
+        <!-- <p class="leavl">
+          <span></span>
+          <span></span>
+        </p> -->
+        <p class="name">{{personalData.name}}</p>
+        <p class="l-score">里程值
+          <span>{{personalData.lScore}}</span>
+        </p>
+        <p class="w-score">万里通积分
+          <span>{{personalData.wScore}}</span>
+        </p>
+      </div>
+      <div v-else class="presonal-info">
+        <div class="avatar">
+          <img :src="personalData.avatar" alt="">
+        </div>
+        <a class="login-btn" @click="notLoginHandleClick()">登录/注册</a>
+        <p class="login-text">登录参与活动</p>
+      </div>
+    </section>
+    <section class="m1" @click.self="sectionPreventDefault">
+      <a class="rule-btn" @click="showRule('signin')"></a>
+      <p class="sign-title">{{staticData.m1.title}}</p>
+      <div class="sign-div">
+        <div class="record">
+          <div class="lines">
+            <span class="line" v-for="index in 14" :class="{'line__yellow':isYellowLine(index)}"></span>
+          </div>
+          <div class="item" v-for="(item,index) in siginData.record" :key="index">
+            
+            <a class="circle" :class="{'history':item.isHistory, 'sigined':item.sigined, 'big':index % 4 == 3}">
+              <span class="c-scroe" v-if="!item.sigined && index % 4 != 3">+{{item.score}}</span>
+              <!-- <span class="c-scroe" v-else-if="item.sigined && index % 4 != 3">对勾(已签到)</span> -->
+              <img v-else-if="item.sigined && index % 4 != 3" src="./images/sigined.png">
+              <!-- <span class="c-scroe" v-else-if="!item.sigined && index % 4 == 3">礼物图</span> -->
+              <img v-else-if="!item.sigined && index % 4 == 3" class="gift" src="./images/gift.png">
+              <!-- <span class="c-scroe" v-else-if="item.sigined && index % 4 == 3">对勾(已签到)</span> -->
+              <img v-else-if="item.sigined && index % 4 == 3" src="./images/sigined.png">
+            </a>
+            <span v-if="item.hasPop" :class="['pop',siginData.pop.animate ? 'slide-up':'']">{{siginData.pop.text}}</span>
+            <span class="date">{{item.date}}</span>
+          </div>
+        </div>
+      </div>
+      <a class="sign-btn" @click="!login.status ? notLoginHandleClick() : siginedHandleClick()"></a>
+    </section>
+    <section class="m2" @click.self="sectionPreventDefault">
+      <a class="rule-btn" @click="showRule('seckill')"></a>
+      <a class="bind-wlt-accoutn" :href="staticData.m2.bindWltAccountHref">{{staticData.m2.bindWltAccountText}}<span>>></span></a>
+      <p class="pop-text">{{staticData.m2.popText}}</p>
+      <div class="date-list">
+        <a class="date" v-for="(item,index) in staticData.m2.dateList" :class="{'active':seckillData.activeIndex == index}" @click="dateHandleClick(index)" :key="index">{{item}}</a>
+      </div>
+      <div class="commodity1" @click="href(seckillData.commodity1.href)">
+        <div class="img">
+          <img :src="seckillData.commodity1.img" alt="">
+        </div>
+        <p class="name">{{seckillData.commodity1.name}}</p>
+        <p class="price">抢购价：{{seckillData.commodity1.price}}积分</p>
+        <p class="residue">剩余：{{seckillData.commodity1.residue}}个</p>
+        <a :class="['btn',true ? seckillData.commodity1.btnColor : '']" @click.stop.prevent="href(seckillData.commodity1.btnHref)">{{seckillData.commodity1.btnText}}</a>
+      </div>
+      <div class="commodity2" @click="href(seckillData.commodity2.href)">
+        <div class="img">
+          <img :src="seckillData.commodity2.img" alt="">
+        </div>
+        <p class="name">{{seckillData.commodity2.name}}</p>
+        <p class="price-text">{{seckillData.commodity2.priceText}}</p>
+        <a :class="['btn',true ? seckillData.commodity2.btnColor : '']" @click.stop.prevent="href(seckillData.commodity2.btnHref)">{{seckillData.commodity2.btnText}}</a>
+      </div><div class="commodity3" @click="href(seckillData.commodity3.href)">
+          <div class="img">
+            <img :src="seckillData.commodity3.img" alt="">
+          </div>
+          <p class="name">{{seckillData.commodity3.name}}</p>
+          <p class="price-text">{{seckillData.commodity3.priceText}}</p>
+          <a :class="['btn',true ? seckillData.commodity3.btnColor : '']" @click.stop.prevent="href(seckillData.commodity3.btnHref)">{{seckillData.commodity3.btnText}}</a>
+        </div>
+    </section>
+    <section class="m3" @click.self="sectionPreventDefault">
+      <a class="rule-btn" @click="showRule('welfare')"></a>
+      <p class="title">刮分<span>{{staticData.m3.wScore}}</span>万里通积分 <span>{{staticData.m3.lScore}}</span>里程值</p>
+      <div class="ggk">
+        <div v-show="scratchCard.result.show" class="result">
+        <!-- <div class="result"> -->
+          <p class="normal" v-html="scratchCard.result.normalHtml"></p>
+          <p v-if="scratchCard.result.residueTimes" class="small">剩余 <span class="red">{{scratchCard.result.residueTimes}}</span> 次</p>
+          <!-- <p v-else class="small">剩余 <span class="red">{{scratchCard.result.residueTimes}}</span> 次,会员升级可获得 <span class="red">1</span> 次</p> -->
+          <p v-if="!scratchCard.result.residueTimes && personalData.lveal < 6" class="small">剩余 <span class="red">{{scratchCard.result.residueTimes}}</span> 次,会员升级可获得 <span class="red">1</span> 次</p>
+          <p v-if="!scratchCard.result.residueTimes && personalData.lveal === 6" class="small">剩余 <span class="red">{{scratchCard.result.residueTimes}}</span> 次，请明日再来</p>          
+          <a v-show="scratchCard.result.residueTimes" class="one-more" @click="makeScratcher">{{scratchCard.result.btnText}}</a>
+        </div>
+        <canvas id="ggk"></canvas>
+        <div v-if="!login.status" class="mask">
+          <p class="normal">登录</p>
+          <p class="normal" style="margin-top:0;">查看刮刮卡资格</p>
+          <a class="btn" @click="notLoginHandleClick()">去登录</a>
+        </div>
+        <div v-show="scratchCard.init.maskShow && login.status" class="mask">
+          <p class="normal" v-if="scratchCard.init.residueTimes">恭喜！<br>获得 <span class="red"> {{scratchCard.init.residueTimes}} </span> 次刮奖机会</p>
+          <p class="normal" style="margin-top: 1rem;" v-else-if="!scratchCard.init.residueTimes && scratchCard.init.noChanceTempleteStyle">
+            {{scratchCard.init.noChanceNormalText}}
+            <br>
+            <span class="small">{{scratchCard.init.noChanceSmallText}}</span> 
+          </p> 
+          <p class="normal" style="margin-top: 1rem;" v-else-if="!scratchCard.init.residueTimes && !scratchCard.init.noChanceTempleteStyle">
+            还差 <span class="red">{{scratchCard.nextLevalDistance}}</span> 里程值升级 
+            <br>
+            <span class="small">{{scratchCard.init.noChanceSmallText}}</span> 
+          </p>          
+          <a class="btn" v-if="scratchCard.init.residueTimes" @click="ggkMaskBtnClick">{{scratchCard.init.btnText}}</a>
+        </div> 
+      </div>
+      <p v-if="personalData.lveal !== 6" class="next-leval-distance">你距离升级还差 <span> {{taskData.nextLevalDistance}} </span> 里程值</p>
+      <p v-if="personalData.lveal !== 6" class="double-text">活动期间完成以下任务里程值翻倍拿</p>
+      <p v-if="personalData.lveal === 6" class="next-leval-distance">恭喜！您已经是之家最高等级会员</p>
+      <p v-if="personalData.lveal === 6" class="double-text">活动期间完成以下任务里程值翻倍拿</p>    
+    </section>
+    <section id="up_section" class="m4" @click.self="sectionPreventDefault">
+      <div class="task-list">
+        <div class="task" v-for="(item,index) in taskData.taskList" :key="index" @click="taskHandleClick(item)">
+          <img class="icon" :src="item.icon">
+          <p class="name">{{item.name}}</p>
+          <p class="gray-text">{{item.grayText}}</p>
+          <a :class="['btn' ,item.status ? 'white' : 'red']" @click.stop.prevent="taskBtnHandleClick(item)">{{item.btnText}}</a>
+        </div>
+      </div>
+      <a class="more-task"  @click="!login.status ? notLoginHandleClick() : window.location.href = taskData.moreTaskHref">完成更多任务去升级 <span> >> </span></a>
+    </section>
+    <section class="m5" @click.self="sectionPreventDefault">
+      <a class="rule-btn" @click="showRule('choujiang')"></a>
+      <div class="marquee">
+        <p class="marquee-item">
+          <span>hofdhsaoe</span>
+          <span>抽到 </span>
+          <span>50元加油券</span>
+        </p>
+        <p class="marquee-item">
+          <span>hofdhsaoe</span>
+          <span>抽到 </span>
+          <span>50元加油券</span>
+        </p>
+        <p class="marquee-item">
+          <span>hofdhsaoe</span>
+          <span>抽到 </span>
+          <span>50元加油券</span>
+        </p>
+        <p class="marquee-item">
+          <span>hofdhsaoe</span>
+          <span>抽到 </span>
+          <span>50元加油券</span>
+        </p>
+        <p class="marquee-item">
+          <span>hofdhsaoe</span>
+          <span>抽到 </span>
+          <span>50元加油券</span>
+        </p>
+      </div>
+      <div class="zhuanpan-outer">
+        <div class="zhuanpan"></div>
+        <a class="zhuanpan-btn turn-tips">
+          <span class="btn-text">
+            今日还有 {{turntableData.playCount}} 次抽奖机会
+          </span>
+        </a>
+        <span v-if="!login.status || !turntableData.playCount" class="zhuanpan-btn">
+          <a v-if="!login.status"  @click="notLoginHandleClick()" class="disabled-text">
+            <span class="s">登录查看抽奖机会</span>
+          </a>
+          <a v-if="login.status && !turntableData.playCount && personalData.lveal === 6" class="disabled-text">
+            <span>抽奖机会用光明日再来</span>
+          </a>
+          <a v-if="login.status && !turntableData.playCount && personalData.lveal !== 6" class="disabled-text">
+            <span>升级获得更多抽奖机会</span>
+          </a>
+        </span>
+      </div>
+      <div class="table-outer">
+        <p class="table-title">{{staticData.m5.tableTitle}}</p>
+        <div class="table">
+          <div class="line" v-for="(item,index) in staticData.m5.table" :key="index">
+            <div class="colum" v-for="(ite,inde) in item" :key="inde">
+              <span>{{ite.split(' ')[0]}}</span>
+              <span>{{ite.split(' ')[1]}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <a class="button"></a>
+        <a class="button"></a>
+      </div>
+    </section>
+    
+    <a class="banner" :href="staticData.banner.href">
+      <img :src="staticData.banner.img" alt="">
+    </a>
+
+    <section class="promot" v-show="promot.seckillToastShow || promot.taskToastShow || promot.zpPrizeToastShow || promot.giftScoreToastShow || promot.dangerToastShow" @click.self="promotHide">
+      
+      <!-- 秒杀 弹出框提示 -->
+      <div v-show="promot.seckillToastShow" class="seckill-toast">
+        <a class="close-seckill-toast" @click="promotHide"></a>
+
+        <div v-if="promot.seckillToastData.type === 0" class="text">
+          <p class="tiny">亲爱的会员~</p>
+          <p class="small">您的积分或等级不足</p>
+        </div>
+        <div v-else-if="promot.seckillToastData.type === 1" class="text">
+          <p class="normal">消耗 <span>{{seckillData.commodity1.price}}</span> 积分</p>
+          <p class="tiny">确认抢购吗？</p>
+        </div>
+        <div v-else-if="promot.seckillToastData.type === 2" class="text" style="margin-top:.5rem">
+          <p class="tiny">{{promot.seckillToastData.tinyText}}</p>
+          <p class="small" style="width:90%;margin-left: 5%;">{{promot.seckillToastData.smallText}}</p>
+        </div>
+        <div v-else-if="promot.seckillToastData.type === 3" class="text" style="margin-top:.5rem">
+          <p class="tiny">{{promot.seckillToastData.tinyText}}</p>
+          <p class="normal" style="margin-top: .15rem;">{{promot.seckillToastData.normalText}}</p>
+          <p class="small" style="font-size:.32rem;width:90%;margin-left: 5%;margin-top: .1rem;">{{promot.seckillToastData.smallText}}</p>
+        </div>
+        
+        <div class="btns">
+          <a v-show="promot.seckillToastData.type < 2" class="btn gray" @click="promotHide">知道了</a>
+          <a class="btn red" @click.prevent="promot.seckillToastData.href ? eval('window.location.href = promot.seckillToastData.href;promotHide()'): promotHide()" >{{promot.seckillToastData.btnText}}</a>
+        </div>
+
+      </div>
+      <!-- 任务 弹出框提示 -->
+      <div v-show="promot.taskToastShow" class="task-toast">
+        <a class="close-task-toast" @click="promotHide"></a>
+        <p class="normal">{{promot.taskToastData.normalText}}</p>
+        <p class="tiny">{{promot.taskToastData.tinyText}}</p>
+        <a class="btn" @click="taskToastBtnClick(promot.taskToastData.href)">{{promot.taskToastData.btnText}}</a>
+      </div>
+      <!-- 转盘 奖品弹出框提示 -->
+      <div v-show="promot.zpPrizeToastShow" class="prize-toast">
+        <a class="close-prize-toast" @click="promotHide"></a>
+        <!-- 实物奖品 -->
+        <div v-if="turntableData.result.type" class="prize type1">
+          <p class="title">{{turntableData.result.title}}</p>
+          <div class="img">
+            <img :src="turntableData.result.img" alt="">
+          </div>
+          <p class="text">今天还有 <span>{{turntableData.playCount}}</span> 次抽奖机会</p>
+          <a class="btn" :href="turntableData.result.href">填写收货地址</a>
+        </div>  
+        <!-- 虚拟奖品 -->
+        <div v-else class="prize type0">
+          <p class="title">{{turntableData.result.title}}</p>
+          <div class="img">
+            <img :src="turntableData.result.img" alt="">
+          </div>
+          <p class="text">在“我的”-“我的优惠券”中查看</p>
+          <p class="text">今天还有 <span>{{turntableData.playCount}}</span> 次抽奖机会</p>
+          <a class="btn" @click="promotHide">确认</a>
+        </div>
+      </div>
+      <!-- 特殊奖品 弹出框提示 -->
+      <div v-show="promot.giftScoreToastShow" class="score-toast">
+        <p>恭喜!<br>获得 <span>{{promot.giftScoreToastData.score}}</span> 积分</p>
+        <a class="btn" @click="promotHide">确定</a>
+      </div>
+      <!-- 账号危险 弹出框提示 -->
+      <div v-show="promot.dangerToastShow" class="danger-toast">
+        <a class="close-danger-toast" @click="promotHide"></a>
+        <p class="normal" v-html="promot.dangerToastData.normalHtml"></p>
+        <p class="small" v-html="promot.dangerToastData.smallHtml"></p>
+        <a class="btn" @click="promotHide">知道了</a>
+      </div>
+    </section>
+
+    <section class="rule-outer" v-show="ruleData.show" @click.self="ruleData.show = false">
+      <div v-if="ruleData.rule.style" class="rule">
+        <a class="close-rule" @click.self="ruleData.show = false"></a>
+        <p class="title">{{ruleData.rule.title}}</p>
+        <p class="text" v-for="(item,index) in ruleData.rule.data" :key="index">
+          <span class="purple">{{item.name}}</span>{{item.value}}
+        </p>
+        <p class="statement">{{ruleData.rule.statement}}</p>
+      </div>
+      <div v-else class="rule">
+        <a class="close-rule" @click.self="ruleData.show = false"></a>
+        <p class="title">{{ruleData.rule.title}}</p>
+        <p class="text" v-for="(item,index) in ruleData.rule.data" :key="index" v-if="item.type === 'text'">
+          <span class="left">{{index + 1}}</span>
+          <span class="right">{{item.value}}</span>
+        </p>
+        <div v-else>
+          <p class="text"><span class="left">{{index + 1}}</span><span class="right">{{item.value.title}}</span></p>
+          <div class="table">
+            <p class="line" v-for="(ite,inde) in item.value.table" :key="inde">
+              <span class="colum" v-for="(it,ind) in ite" :key="ind">{{it}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- js脚本文件 -->
+  <!-- <script src="./js/jquery.min.js"></script> -->
+  <!-- 上线时使用 -->
+  <!-- <script src="//s.autoimg.cn/mass/zepto-1.2.2.min.js"></script>
+  <script src="//s.autoimg.cn/mass/mass-2.3.5.min.js"></script> -->
+  <!-- 开发时使用 -->
+  <script src="./js/online/zepto-1.2.2.js"></script>
+  <script src="./js/online/mass-2.3.3.js"></script>
+  <!-- 刮刮卡组件 -->
+  <script src="./js/scratchTicket.js"></script>
+  <!-- 大转盘组件 -->
+  <script src="./js/turntable.js"></script>
+
+  <!-- 引入vue -->
+  <script src="//cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+  <!-- 获取数据文件 测试完成之后可以合并为一个js文件 -->
+  <script src="./js/staticData.js"></script>
+  <script src="./js/personalData.js"></script>
+  <script src="./js/siginData.js"></script>
+  <script src="./js/seckillData.js"></script>
+  <script src="./js/scratchCard.js"></script>
+  <script src="./js/taskData.js"></script>
+  <script src="./js/turntableData.js"></script>
+  <script src="./js/promotStatus.js"></script>
+  
+
+  <!-- 渲染生成页面 -->
+  <script src="./js/app.js"></script>
+  <script src="./js/marquee.js"></script>
+  <!-- js脚本文件 -->
+</body>
+
+</html>

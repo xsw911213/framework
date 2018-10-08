@@ -12,17 +12,27 @@ gulp.task('sass', function () {
     .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
     .pipe(gulp.dest(buildPath + '/css'))
 });
+
 gulp.task('css', function () {
   return gulp.src(basePath + "/**/*.css")
     .pipe(gulp.dest(buildPath))
 })
+
+gulp.task('mp3', function () {
+  return gulp.src(basePath + "/**/*.mp3")
+    .pipe(gulp.dest(buildPath))
+})
 gulp.task('html', function () {
   return gulp.src(basePath + "/**/*.html")
-    .pipe(gulp.dest(buildPath))
+    .pipe(gulp.dest(buildPath));
 });
+gulp.task("clean-html",["html"],function(){
+  return gulp.src('dist/_html/')
+    .pipe(clean());
+})
 gulp.task('js', function () {
-  return gulp.src(basePath + '/js/*.js')
-    .pipe(gulp.dest(buildPath + '/js'))
+  return gulp.src(basePath + '/**/*.js')
+    .pipe(gulp.dest(buildPath))
 });
 gulp.task('img', function () {
   return gulp.src(basePath + '/**/images/**')
@@ -33,8 +43,8 @@ gulp.task('lib', function () {
     .pipe(gulp.dest(buildPath + '/lib'))
 });
 
-gulp.task('autoprefixer',['sass', 'css', 'js', 'img', 'html', 'lib'], function () {
-  return gulp.src('dist/css/pc.css')
+gulp.task('autoprefixer',['sass', 'css', 'js', 'img', 'clean-html', 'lib','mp3'], function () {
+  return gulp.src('dist/css/*.css')
   .pipe(autoprefixer({
       browsers: ['last 3 versions',"ie >= 10","> 5%"],
       // 所有浏览器的最新的 3 个版本
