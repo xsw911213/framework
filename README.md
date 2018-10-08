@@ -35,7 +35,7 @@ gulp dev
 3、开发说明
 
 > jQuery  版本默认为  v3.1.0
-
+>
 > html 的源码在src/html文件夹中，使用gulp-file-include进行编写
 
 4、打包：在项目目录中执行命令
